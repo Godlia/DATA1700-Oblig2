@@ -93,35 +93,39 @@ function showErrors(errorlist) {
 
 
 function updateView() {
+    ticketarr = [];
     $.getJSON("/getList", (data) => {
             ticketarr = data;
         }
-    );
-    let out = "";
-    out += "\n" +
-        "    <tr class='bolder'>\n" +
-        "        <td>Film</td>\n" +
-        "        <td>Antall</td>\n" +
-        "        <td>Fornavn</td>\n" +
-        "        <td>Etternavn</td>\n" +
-        "        <td>Telefonnummer</td>\n" +
-        "        <td>E-Post</td>\n" +
-        "    </tr>";
-    //debugger;
+    ).done(() => {
+        let out = "";
+        out += "\n" +
+            "    <tr class='bolder'>\n" +
+            "        <td>Film</td>\n" +
+            "        <td>Antall</td>\n" +
+            "        <td>Fornavn</td>\n" +
+            "        <td>Etternavn</td>\n" +
+            "        <td>Telefonnummer</td>\n" +
+            "        <td>E-Post</td>\n" +
+            "    </tr>";
+        //debugger;
 
-    //Normal array iteration did not work, but this did. basically a function that does a for loop through the array
-    //with arrowfunctions
-    ticketarr.forEach((item) => {
-        out += "<tr>";
-        console.log(item);
-        Object.values(item).forEach((value) => {
-            out += "<td>" + value + "</td>";
-        });
-        out += "</tr>";
-    })
+        //Normal array iteration did not work, but this did. basically a function that does a for loop through the array
+        //with arrowfunctions
+        ticketarr.forEach((item) => {
+            out += "<tr>";
+            console.log(item);
+            Object.values(item).forEach((value) => {
+                out += "<td>" + value + "</td>";
+            });
+            out += "</tr>";
+        })
 
-    ticketView.innerHTML = out
-}
+        ticketView.innerHTML = out
+
+
+    });
+    }
 
 function addTicket() {
     let requestData = {
@@ -147,9 +151,12 @@ function addTicket() {
             console.error("Error:", error);
             // Handle error here
         }
+        //wait for callback
+    }).done(() => {
+        updateView();
     });
 
-updateView();
+
 
 }
 
@@ -170,7 +177,6 @@ function purchase() {
     if (errors.length === 0) {
         clearErrors();
         addTicket();
-        updateView();
         //alert("Suksess"); // alert to give the server some time to respond
     } else {
         clearErrors();
@@ -181,4 +187,4 @@ function purchase() {
 }
 
 //når all koden har kjørt så laster vi tabellen (tilfelle man bruker cookies for å lagre/hente arrayen senere)
-updateView();
+//updateView();
